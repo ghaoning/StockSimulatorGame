@@ -7,6 +7,18 @@ public class User {
 	
 	
 	
+	public double getDeposit() {
+		return deposit;
+	}
+
+
+
+	public HashMap<String, Integer> getStockShare() {
+		return stockShare;
+	}
+
+
+
 	/**
 	 * This method define the process of buying stocks with given stock name and share.
 	 * @param stockName Name of stock to be bought.
@@ -108,4 +120,18 @@ public class User {
 		System.out.println();
 	}
 	
+	
+	
+	/**
+	 * This method calculates the total points of user, consisting of user's deposit and current market value.
+	 * @param market
+	 * @return
+	 */
+	public double userPointCalculation(Market market) {
+		double totalValue = 0.0;
+		for (String key : stockShare.keySet()) {
+			totalValue += stockShare.get(key) * market.getStockSet().get(key).getStockValue();
+		}
+		return totalValue;
+	}
 }

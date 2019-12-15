@@ -48,22 +48,37 @@ public class Game {
 	public void turn(Scanner sc, User user, Market market) {
 		System.out.println("Type \"1\" to buy stocks,");
 		System.out.println("Type \"2\" to sell stocks,");
-		System.out.println("Type \"0\" to continue without any actions.");
-		String userInput = sc.nextLine();
-		while (!userInput.equals("0")) {
-			if (userInput.equals("1")) {
+		System.out.println("Type \"0\" to continue to next round.");
+		Scanner sc2 = new Scanner(System.in);
+		String userInput = sc2.nextLine();
+
+
+		while(true){
+
+			if(userInput.equals("0")){
+				System.out.println("Next turn");
+				break;
+			}else if (userInput.equals("1")) {
+				System.out.println(" You type \"1\" to buy stocks,");
+				userStockSelection(sc, user, market);
 				userBuyOption(sc, user, market);
+
+				break;
 			}
 			else if (userInput.equals("2")) {
-				
+				System.out.println(" You type \"2\" to sell stocks,");
+				userStockSelection(sc, user, market);
+				userSellOption(sc, user, market);
+				break;
+			} else {
+				System.out.println("Invalid Sell or Buy, please type again!");
+				userInput = sc2.nextLine();
 			}
-			else {
-				System.out.println("Invalid input, please type again!");
-				userInput = sc.nextLine();
-			}
+
 		}
+
 		
-		System.out.println();
+
 	}
 	
 	
@@ -75,7 +90,7 @@ public class Game {
 	 * @param market Market in which the transactions happen.
 	 */
 	public void userBuyOption(Scanner sc, User user, Market market) {
-		userStockSelection(sc);
+//		userStockSelection(sc,user,market);
 		userShareInput(sc);
 		if (user.ifEnoughDeposit(company, share, market)) {
 			user.buy(company, share, market);
@@ -91,24 +106,35 @@ public class Game {
 	 * This method defines the stock to buy.
 	 * @param sc
 	 */
-	public void userStockSelection(Scanner sc) {
-		System.out.println("Input the name of company, or type \"BUY\" to go back.");
+	public void userStockSelection(Scanner sc, User user, Market market) {
+
+		System.out.println("Input the name of company, or type \"BACK\" to go back.");
 		String userInput = sc.nextLine();
-		while (!userInput.toUpperCase().equals("A") &&
-		       !userInput.toUpperCase().equals("B") &&
-			   !userInput.toUpperCase().equals("C") &&
-			   !userInput.toUpperCase().equals("D") &&
-			   !userInput.toUpperCase().equals("E") &&
-			   !userInput.toUpperCase().equals("BUY")) {
-			System.out.println("Invalid input, please type again!");
-			userInput = sc.nextLine();
+
+		while(true){
+
+			if(userInput.toUpperCase().equals("BACK")){
+				System.out.println("We just go back!");
+				turn(sc, user, market);
+				continue;
+			}else if (userInput.toUpperCase().equals("A") ||
+					userInput.toUpperCase().equals("B") ||
+					userInput.toUpperCase().equals("C") ||
+					userInput.toUpperCase().equals("D") ||
+					userInput.toUpperCase().equals("E")){
+				company = userInput.toUpperCase();
+				System.out.println("You select company  " + company);
+				break;
+
+			}else {
+				System.out.println("Invalid Company, please type again!");
+				userInput = sc.nextLine();
+			}
 		}
-		if (userInput.toUpperCase().equals("BUY")) {
-			System.out.println("We just go back!");
-		}
-		else {
-			company = userInput.toUpperCase();
-		}
+
+			
+
+
 	}
 	
 	
@@ -119,14 +145,38 @@ public class Game {
 	 */
 	public void userShareInput(Scanner sc) {
 		try {
+			System.out.println("Please input share number");
 			share = sc.nextInt();
 		}
 		catch (InputMismatchException e) {
-			System.out.println("Invalid input, please type again!");
-			sc.nextLine();
+			System.out.println("Invalid Share, please type again!");
+//			sc.nextLine();
+			userShareInput(sc);
 		}
 	}
 	
 	
+	
+	/**
+	 * This method defines the interactions when user decides to sell a stock.
+	 * @param sc User input.
+	 * @param user User object.
+	 * @param market Market in which the transactions happen.
+	 */
+	public void userSellOption(Scanner sc, User user, Market market) {
+//		userStockSelection(sc, user, market);
+		userShareInput(sc);
+		if (user.ifEnoughShare(company, share)) {
+			user.sell(company, share, market);
+		}
+		else {
+			System.out.println("Not enough share, please wait for 5 seconds!");
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 }

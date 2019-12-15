@@ -46,6 +46,9 @@ public class Stock {
 	
 	
 	
+	/**
+	 * This method initiates the parameters for each stock.
+	 */
 	public void stockInitiation() {
 		Random rd = new Random();
 		riskFreeRate = 2.25 + rd.nextGaussian() * 0.625; /* Distribution of riskFreeRate conforms to G(2.25, 0.625) */
@@ -59,10 +62,15 @@ public class Stock {
 	
 	
 	
+	/**
+	 * This method stimulates the change of parameters of each stock.
+	 */
 	public void turnSimulation() {
 		Random rd = new Random();
+		//Return value is calculated based on other 5 parameters. 
 		returnValue = (beta * marketPremium + riskFreeRate + idiosyncraticPremium + countryPremium) * (1 + rd.nextGaussian() * 0.05);
 		stockValue = stockValue * (1 + returnValue);
+		//The change of each parameter should be a Gaussian distribution.
 		riskFreeRate = riskFreeRate * (1 + rd.nextGaussian() * 0.05);
 		beta = beta * (1 + rd.nextGaussian() * 0.05);
 		marketPremium = marketPremium * (1 + rd.nextGaussian() * 0.05);
